@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  app:
+    container_name: messenger-clone-be
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    networks:
+      - messenger-clone-be-network
+    command: bash -c "npm run dev"
+networks:
+  messenger-clone-be-network:

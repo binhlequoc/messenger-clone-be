@@ -1,7 +1,7 @@
 import { IDecodedUserInfo } from "@src/interfaces/auth";
-import { errorResponse } from "@src/utils";
+import { IUserDto } from "@src/interfaces/user";
 import { NextFunction, Request, Response } from "express";
-import { verify } from "jsonwebtoken";
+import { verify, sign } from "jsonwebtoken";
 
 export const authenticateToken = (
   req: Request & IDecodedUserInfo,
@@ -9,11 +9,30 @@ export const authenticateToken = (
   next: NextFunction
 ) => {
   if (!req.headers["authorization"]) {
-    throw Error("Missing headers");
+    return res.status(403).json({
+      error: "Authentication failed",
+    });
   }
-  const token = req.headers["authorization"].replace("Bearer ", "");
-  const userInfo = verify(token, process.env.SECRET) as IDecodedUserInfo;
-  req.id = userInfo.id;
-  req.email = userInfo.email;
-  next();
+  try {
+    const token = req.headers["authorization"].replace("Bearer ", "");
+    const userInfo = verify(token, process.env.SECRET) as IDecodedUserInfo;
+    req.id = userInfo.id;
+    req.email = userInfo.email;
+    next();
+  } catch (error) {
+    return res.status(403).json({
+      error: "Authentication failed",
+    });
+  }
+};
+
+export const createToken = async (user: IUserDto & { id: string }) => {
+  return await sign(
+    {
+      id: user.id,
+      email: user.email,
+    },
+    process.env.SECRET,
+    { expiresIn: "30d" }
+  );
 };

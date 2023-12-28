@@ -9,6 +9,11 @@ export const successResponse = (res: Response, data: any) => {
 
 export const errorResponse = (res: Response, statusCode: number) => {
   if (`${statusCode}` === httpStatus[401]) {
-    return res.status(statusCode).send(httpStatus["401_MESSAGE"]);
+    return res.status(statusCode).json({
+      data: httpStatus["401_MESSAGE"],
+    });
   }
+  return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+    error: httpStatus[500],
+  });
 };

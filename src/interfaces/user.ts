@@ -5,3 +5,13 @@ export interface IUserDto {
   age: number;
   password: string;
 }
+
+export interface IUserSignIn {
+  email: string;
+  password: string;
+}
+
+export interface ISignIn {
+  email: string;
+  password: string;
+}

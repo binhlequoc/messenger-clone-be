@@ -1,14 +1,18 @@
-import { successResponse } from "./utils";
 import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
+import express, { Express } from "express";
 import "module-alias/register";
-
+import { successResponse } from "./utils";
+import { Server } from "socket.io";
 import { connectDatabase } from "./core/database";
 import router from "./router";
+import http from "http";
+import { IApp } from "./interfaces";
 
 dotenv.config();
-const app = express();
+const app: Express & IApp = express();
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
 
 const startApp = async () => {
   await connectDatabase();
@@ -22,13 +26,15 @@ const startApp = async () => {
 
   app.use(express.json());
 
+  app.io = io;
+
   app.get("/", (_, res) => {
     return successResponse(res, "Messenger Clone API");
   });
 
   app.use("/api/v1", router);
 
-  app.listen(process.env.PORT, () => {
+  httpServer.listen(process.env.PORT, () => {
     console.log(`App listen on port ${process.env.PORT}`);
     return;
   });

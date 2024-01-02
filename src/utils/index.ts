@@ -8,7 +8,7 @@ export const successResponse = (res: Response, data: any) => {
 };
 
 export const errorResponse = (res: Response, error: AppError) => {
-  return res.status(error.status).json({
+  return res.status(error.status || 500).json({
     error: error.message,
   });
 };

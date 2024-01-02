@@ -1,6 +1,5 @@
-import { mongooseInstance } from "@src/core/database/index";
-import { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import { Document, Model, Schema, model } from "mongoose";
 
 export interface IUser extends Document {
   email: string;
@@ -58,7 +57,25 @@ UserSchema.method("comparePassword", async function (password: string) {
   return await bcrypt.compare(password, this.password);
 });
 
-export const User = mongooseInstance.model<IUser, UserModel>(
-  "User",
-  UserSchema
-);
+UserSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    delete ret.password;
+    ret.id = doc._id.toString();
+    delete ret._id;
+    delete ret.__v;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    return ret;
+  },
+});
+
+UserSchema.set("toObject", {
+  transform: (doc, ret) => {
+    ret.id = doc._id.toString();
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
+
+export const User = model<IUser, UserModel>("User", UserSchema);

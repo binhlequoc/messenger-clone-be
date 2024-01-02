@@ -8,7 +8,7 @@ export const signUp = async (payload: IUserDto) => {
   const existUser = await User.findOne({
     email: payload.email,
   });
-  if (existUser) throw new Error("Email is existing");
+  if (existUser) throw new AppError(EErrorStatus.BadRequestError);
   const createUser = await User.create(payload);
   return await createToken({
     ...payload,

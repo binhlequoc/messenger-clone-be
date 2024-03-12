@@ -12,7 +12,11 @@ import { IApp } from "./interfaces";
 dotenv.config();
 const app: Express & IApp = express();
 const httpServer = http.createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.WEB_URL,
+  },
+});
 
 const startApp = async () => {
   await connectDatabase();
@@ -27,6 +31,14 @@ const startApp = async () => {
   app.use(express.json());
 
   app.io = io;
+
+  app.io.on("connection", (socket) => {
+    console.log(`[${socket.id}]: connected`);
+    socket.on("disconnect", (reason) => {
+      console.log(`[${socket.id}]: disconnected`);
+      console.log(`[reason]: ${reason}`);
+    });
+  });
 
   app.get("/", (_, res) => {
     return successResponse(res, "Messenger Clone API");

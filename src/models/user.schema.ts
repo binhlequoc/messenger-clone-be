@@ -6,6 +6,7 @@ export interface IUser extends Document {
   firstName: string;
   lastName: string;
   age: number;
+  avatar: string;
   password: string;
 }
 
@@ -38,6 +39,9 @@ const UserSchema: Schema<IUser, IUserMethods> = new Schema<IUser, IUserMethods>(
     password: {
       type: String,
       require: true,
+    },
+    avatar: {
+      type: String,
     },
   },
   {

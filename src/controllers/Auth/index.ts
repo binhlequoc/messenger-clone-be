@@ -1,42 +1,28 @@
-import { validateSignIn, validateSignUp } from "@src/core/validation";
-import { authenticateToken } from "@src/middleware/auth";
-import { signIn, signUp } from "@src/services/auth.service";
-import { getUsers } from "@src/services/user.service";
-import { errorResponse, successResponse } from "@src/utils";
-import express from "express";
+import { AppError } from "@src/core/error";
+import { Controller } from "../controller";
 
-const authController = express.Router();
-
-authController.post("/sign-in", async (req, res) => {
-  try {
-    const payload = validateSignIn(req.body);
-    const token = await signIn(payload);
-    return successResponse(res, { token: token });
-  } catch (error) {
-    console.log("Error", error.message);
-    return errorResponse(res, error);
+export class Auth extends Controller {
+  constructor() {
+    super();
   }
-});
 
-authController.post("/sign-up", async (req, res) => {
-  try {
-    const payload = validateSignUp(req.body);
-    const token = await signUp(payload);
-    return successResponse(res, {
-      token: token,
-    });
-  } catch (error) {
-    return errorResponse(res, error);
+  async get() {
+    throw new AppError(404);
   }
-});
 
-authController.get("/me", authenticateToken, async (req, res) => {
-  try {
-    await getUsers();
-    return successResponse(res, "Me API");
-  } catch (error) {
-    return errorResponse(res, error);
+  async post() {
+    return null;
   }
-});
 
-export default authController;
+  async put() {
+    throw new AppError(404);
+  }
+
+  async patch() {
+    throw new AppError(404);
+  }
+
+  async delete() {
+    throw new AppError(404);
+  }
+}

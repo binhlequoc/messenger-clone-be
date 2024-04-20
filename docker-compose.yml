@@ -14,7 +14,8 @@ services:
       - .env
     networks:
       - messenger-clone-be-network
-    command: bash -c "npm run build && npm run start"
+    # command: bash -c "npm run build && npm run start"
+    command: bash -c "npm run dev"
     depends_on:
       - mongodb
   mongodb:

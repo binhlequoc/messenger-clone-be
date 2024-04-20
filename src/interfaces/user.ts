@@ -15,3 +15,9 @@ export interface ISignIn {
   email: string;
   password: string;
 }
+
+export interface IUserFilter {
+  email?: string;
+  fullName?: string;
+  age?: number;
+}

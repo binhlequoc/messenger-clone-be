@@ -1,8 +1,32 @@
 import { authenticateToken } from "@src/middleware/auth";
 import express from "express";
+import { Controller } from "../controller";
+import { UserService } from "@src/services/user.service";
 
-const userController = express.Router();
+export class UserController extends Controller {
+  private userService: UserService;
+  constructor() {
+    super();
+    this.userService = new UserService();
+  }
 
-userController.use(authenticateToken);
+  async get() {
+    return await this.userService.find({});
+  }
 
-export default userController;
+  async post() {
+    return null;
+  }
+
+  async put() {
+    return null;
+  }
+
+  async patch() {
+    return null;
+  }
+
+  async delete() {
+    return null;
+  }
+}

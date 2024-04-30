@@ -25,7 +25,7 @@ export const authenticateToken = (
   }
 };
 
-export const createToken = async (user: IUserDto & { id: string }) => {
+export const createToken = async (user: { id: string; email: string }) => {
   return await sign(
     {
       id: user.id,

@@ -1,48 +1,35 @@
-version: "3"
-
+version: '3'
 services:
   app:
-    container_name: messenger-clone-be
+    container_name: messenger-clone-be-prod
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - .:/app
+    command: bash -c "yarn build && yarn start"
     ports:
-      - ${PORT}:${PORT}
+      - '${PORT}:${PORT}'
     env_file:
       - .env
-    networks:
-      - messenger-clone-be-network
-    # command: bash -c "npm run build && npm run start"
-    command: bash -c "npm run dev"
-    depends_on:
-      - mongodb
-  mongodb:
-    container_name: messenger-clone-db
-    image: zcube/bitnami-compat-mongodb:latest
-    restart: always
-    ports:
-      - "27018:27017"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    networks:
-      - messenger-clone-be-network
     volumes:
-      - db-data:/bitnami/mongodb
+      - .:/app
+    networks:
+      - messenger-clone-be-prod-network
+
   redis:
     image: redis:latest
-    container_name: messenger-clone-be-redis
+    container_name: messenger-clone-be-redis-prod
     command: redis-server --appendonly yes --replica-read-only no
     restart: always
     ports:
-      - "6372:6372"
+      - '6379:6379'
     volumes:
       - redis-data:/data
     networks:
-      - messenger-clone-be-network
+      - messenger-clone-be-prod-network
+
 networks:
-  messenger-clone-be-network:
+  messenger-clone-be-prod-network:
+
 volumes:
   db-data:
   redis-data:

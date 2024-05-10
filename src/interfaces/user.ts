@@ -1,7 +1,6 @@
-export interface IUserDto {
+export interface IUserSignUp {
   email: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   age: number;
   password: string;
 }
@@ -16,8 +15,12 @@ export interface ISignIn {
   password: string;
 }
 
+export interface ISignInResponse {
+  token: string;
+}
+
 export interface IUserFilter {
   email?: string;
   fullName?: string;
-  age?: number;
+  page?: number;
 }

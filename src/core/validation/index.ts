@@ -1,13 +1,14 @@
+import { IUserSignIn, IUserSignUp } from "@src/interfaces/user";
 import Joi from "joi";
 import { AppError, EErrorStatus } from "../error";
+import { PASSWORD_REGEX } from "@src/constants";
 
-export const validateSignUp = (payload: Record<string, any>) => {
+export const validateSignUp = (payload: IUserSignUp): IUserSignUp => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
+    fullName: Joi.string().required(),
     age: Joi.number().required(),
-    password: Joi.string().min(8).required(),
+    password: Joi.string().min(8).required().regex(PASSWORD_REGEX),
   });
 
   const { value, error } = schema.validate(payload);
@@ -17,10 +18,10 @@ export const validateSignUp = (payload: Record<string, any>) => {
   return value;
 };
 
-export const validateSignIn = (payload: Record<string, string>) => {
+export const validateSignIn = (payload: IUserSignIn): IUserSignIn => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.string().min(8).required(),
+    password: Joi.string().required(),
   });
 
   const { value, error } = schema.validate(payload);

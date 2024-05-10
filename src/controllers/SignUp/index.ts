@@ -1,10 +1,10 @@
-import { AppError } from "@src/core/error";
+import { Request, Response } from "express";
 import { Controller } from "../controller";
-import { validateSignIn } from "@src/core/validation";
-import { Request } from "express";
+import { validateSignUp } from "@src/core/validation";
+import { AppError } from "@src/core/error";
 import { AuthService } from "@src/services/auth.service";
 
-export class Auth extends Controller {
+export class SignUpController extends Controller {
   private authService: AuthService;
   constructor() {
     super();
@@ -12,16 +12,14 @@ export class Auth extends Controller {
   }
 
   async get() {
-    throw new AppError(404);
+    return null;
   }
 
   async post(req: Request) {
-    const value = validateSignIn(req.body);
-    const token = await this.authService.signIn(value);
+    const value = validateSignUp(req.body);
+    await this.authService.signUp(value);
     return {
-      data: {
-        token,
-      },
+      message: "User created successfully",
     };
   }
 

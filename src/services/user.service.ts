@@ -1,9 +1,11 @@
-import { User } from "@src/models/user.schema";
+import { IUser, User } from "@src/models/user.schema";
 import { Service } from "./service";
 import { IUserFilter } from "@src/interfaces/user";
 
 export class UserService extends Service {
-  async create() {}
+  async create(payload: IUser) {
+    await User.create(payload);
+  }
 
   async find({ email, fullName }: IUserFilter) {
     return await User.find({

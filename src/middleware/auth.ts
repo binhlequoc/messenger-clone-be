@@ -1,9 +1,9 @@
 import { AppError, EErrorStatus } from "@src/core/error";
 import { IDecodedUserInfo } from "@src/interfaces/auth";
-import { IUserDto } from "@src/interfaces/user";
 import { errorResponse } from "@src/utils";
 import { NextFunction, Request, Response } from "express";
 import { sign, verify } from "jsonwebtoken";
+import { Socket } from "socket.io";
 
 export const authenticateToken = (
   req: Request & IDecodedUserInfo,
@@ -34,4 +34,23 @@ export const createToken = async (user: { id: string; email: string }) => {
     process.env.SECRET,
     { expiresIn: "30d" }
   );
+};
+
+export const authenticateTokenSocket = (socket: Socket, next: NextFunction) => {
+  try {
+    if (!socket.request.headers["authorization"]) {
+      throw new AppError(EErrorStatus.AuthorizationError);
+    }
+
+    const token = socket.request.headers["authorization"].replace(
+      "Bearer ",
+      ""
+    );
+    const userInfo = verify(token, process.env.SECRET) as IDecodedUserInfo;
+    console.log("[userInfo]", userInfo);
+    next();
+  } catch (error) {
+    console.log("[Socket error]: ", error);
+    next(new AppError(EErrorStatus.AuthorizationError));
+  }
 };

@@ -1,7 +1,5 @@
-import { authenticateToken } from "@src/middleware/auth";
-import express from "express";
-import { Controller } from "../controller";
 import { UserService } from "@src/services/user.service";
+import { Controller } from "../controller";
 
 export class UserController extends Controller {
   private userService: UserService;

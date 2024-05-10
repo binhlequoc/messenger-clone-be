@@ -1,6 +1,7 @@
 import { mongooseInstance } from "@src/core/database/index";
 import { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import { PASSWORD_REGEX } from "@src/constants";
 
 export interface IUser {
   email: string;
@@ -17,7 +18,10 @@ export interface IUserMethods {
 
 type UserModel = Model<IUserDocument, {}, IUserMethods>;
 
-const UserSchema: Schema<IUserDocument, IUserMethods> = new Schema<IUserDocument, IUserMethods>(
+const UserSchema: Schema<IUserDocument, IUserMethods> = new Schema<
+  IUserDocument,
+  IUserMethods
+>(
   {
     email: {
       type: String,
@@ -35,7 +39,9 @@ const UserSchema: Schema<IUserDocument, IUserMethods> = new Schema<IUserDocument
     },
     password: {
       type: String,
+      minlength: 8,
       require: true,
+      match: PASSWORD_REGEX,
     },
   },
   {
@@ -54,6 +60,14 @@ UserSchema.pre("save", async function (next) {
 UserSchema.method("comparePassword", async function (password: string) {
   return await bcrypt.compare(password, this.password);
 });
+
+UserSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    delete ret.password;
+    return ret;
+  },
+});
+UserSchema.set("toObject", { transform: true });
 
 export const User = mongooseInstance.model<IUserDocument, UserModel>(
   "User",
